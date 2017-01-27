@@ -7,11 +7,11 @@ ARG http_proxy=$https_proxy
 # 依存関係をインストール
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        g++ python3 bzip2 libmsgpack-dev libonig-dev libgtest-dev && \
+        g++ python3 bzip2 libmsgpack-dev libonig-dev libgtest-dev patch && \
     rm -rf /var/lib/apt/lists/*
 
 # Jubatusパッケージをコピー
-COPY $JUBATUS_VERSION.tar.gz /tmp
+COPY $JUBATUS_VERSION.tar.gz fix.patch /tmp/
 
 # VERSION
 RUN python3 --version && \
@@ -22,16 +22,19 @@ RUN python3 --version && \
 RUN cd /tmp && \
     tar xf $JUBATUS_VERSION.tar.gz && \
     cd jubatus_core-$JUBATUS_VERSION && \
+    patch -p1 < /tmp/fix.patch && \
     python3 ./waf configure --prefix=/usr && \
-    python3 ./waf --checkall install > /dev/null && \
+    python3 ./waf --checkall install > /dev/null 2>&1 && \
     echo -n "test 1st build: " && \
     (python3 -c "import ctypes; ctypes.cdll.LoadLibrary('libjubatus_core.so')" && echo ok || true) && \
     cd .. && \
     rm -rf jubatus_core-$JUBATUS_VERSION && \
     tar xf $JUBATUS_VERSION.tar.gz && \
     cd jubatus_core-$JUBATUS_VERSION && \
+    patch -p1 < /tmp/fix.patch && \
     python3 ./waf configure --prefix=/usr --checkall install > /dev/null 2>&1 && \
     cd .. && \
     rm -rf jubatus_core-$JUBATUS_VERSION && \
     echo -n "test 2nd build: " && \
-    python3 -c "import ctypes; ctypes.cdll.LoadLibrary('libjubatus_core.so')" && echo ok
+    python3 -c "import ctypes; ctypes.cdll.LoadLibrary('libjubatus_core.so')" && echo ok && \
+    false

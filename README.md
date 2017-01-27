@@ -6,13 +6,13 @@
 |Distribution|gcc|ld |fmv|build|dlopen|
 |------------|---|---|---|-----|------|
 |Debian(jessie)|4.9.2-10 (debian)|2.25|◯|◯|△|
-|Ubuntu(xenial)|5.4.0 20160609 (5.4.0-6ubuntu1~16.04.4)|2.26.1|◯|☓|-|
+|Ubuntu(xenial)|5.4.0 20160609 (5.4.0-6ubuntu1~16.04.4)|2.26.1|◯|◯|◯|
 |Ubuntu(yakkety)|6.2.0 20161005 (6.2.0-5ubuntu12)|2.27|◯|◯|◯|
 |Ubuntu(zesty)|6.3.0 20161229 (6.3.0-2ubuntu1)|2.27.90.20170114|-|-|-|
 
 注記
 * Debian(jessie)は，ビルドする度にdlopenが成功したりSEGVしたりする
-* Ubuntu(xenial)は，リンクエラーによりビルド失敗
+* Ubuntu(xenial)は，リンク時の回避策によりビルド・テストに成功
 * Ubuntu(yakkety)はC++11が標準となったためテストコードのビルドに失敗するが，
   本体のビルドとdlopenは常に成功
 * Ubuntu(zesty)はmsgpack 1.4.2のためconfigureが通らず
